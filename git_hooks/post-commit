@@ -1,0 +1,17 @@
+#!/bin/bash
+
+files=`git diff --name-only --diff-filter=AMCR`
+if [ -z "$files" ]
+then
+    exit 0
+fi
+
+echo "Commit fixed files"
+
+echo
+if [ -a .process_commit ]
+then
+    rm .process_commit
+    git commit -a --amend -C HEAD --no-verify --allow-empty
+fi
+exit

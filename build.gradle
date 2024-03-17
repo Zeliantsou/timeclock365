@@ -1,0 +1,129 @@
+task build () {
+    doLast {
+        removeGitHooks()
+        copyGitHooks()
+        createPHPCSConfig('app')
+        createPHPStanConfig('app')
+
+        buildContainers()
+        buildApp('app', 'build')
+        runContainers()
+    }
+}
+
+task test () {
+    doLast {
+        buildContainers()
+        buildApp('app', 'test')
+    }
+}
+
+task release () {
+    doLast {
+        buildContainers()
+        buildApp('app', 'release')
+        runContainers()
+    }
+}
+
+def buildContainers() {
+    createEnvFile()
+    exec {
+        commandLine 'docker-compose', 'stop'
+    }
+    exec {
+        commandLine 'docker-compose', 'up', '--build', '--no-start'
+    }
+}
+
+def runContainers() {
+    exec {
+        commandLine 'docker-compose', 'up', '-d'
+    }
+}
+
+def buildApp(app, mode) {
+    exec {
+        commandLine 'docker-compose', 'up', '-d', app
+    }
+    containerExec(app, ['php', './build_script', mode])
+    exec {
+        commandLine 'docker-compose', 'stop', app
+    }
+}
+
+def containerExec(container, command) {
+    def cmd = ['docker-compose', 'exec', '-T', container]
+    cmd.addAll(command)
+    exec {
+        commandLine cmd
+    }
+}
+
+def containerRun(container, command) {
+    def cmd = ['docker-compose', 'run', '-T', '--entrypoint']
+    cmd.addAll(command)
+    cmd.add(container)
+    exec {
+        commandLine cmd
+    }
+}
+
+def createEnvFile() {
+    if(!file('.env').exists()) {
+        copy {
+            from '.env.dist'
+            into '.'
+            rename { String fileName ->
+                fileName.replace(".env.dist", ".env")
+            }
+        }
+    }
+}
+
+def createPHPCSConfig(service) {
+    if(!file('./'+service+'/.php-cs-fixer.php').exists()) {
+        copy {
+            from './'+service+'/.php-cs-fixer.dist.php'
+            into './'+service+'/'
+            rename { String fileName ->
+                fileName.replace(".php-cs-fixer.dist.php", ".php-cs-fixer.php")
+            }
+        }
+    }
+}
+
+def createPHPStanConfig(service) {
+    if(!file('./'+service+'/phpstan.neon').exists()) {
+        copy {
+            from './'+service+'/phpstan.neon.dist'
+            into './'+service+'/'
+            rename { String fileName ->
+                fileName.replace("phpstan.neon.dist", "phpstan.neon")
+            }
+        }
+    }
+}
+
+def copyHook(hook) {
+    copy {
+        from "git_hooks/${hook}"
+        into ".git/hooks"
+    }
+}
+
+def copyGitHooks() {
+    copyHook('pre-commit')
+    copyHook('post-commit')
+}
+
+def removeHook(hook) {
+    if(file(".git/hooks/${hook}").exists()) {
+        delete ".git/hooks/${hook}"
+    }
+}
+
+def removeGitHooks() {
+    removeHook('pre-commit')
+    removeHook('post-commit')
+}

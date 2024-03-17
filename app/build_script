@@ -1,0 +1,83 @@
+#!/usr/bin/env php
+<?php
+
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputDefinition;
+use Symfony\Component\ErrorHandler\Debug;
+use Symfony\Component\Process\Process;
+
+shell_exec('composer install --no-interaction');
+
+require __DIR__.'/vendor/autoload.php';
+
+$definition = new InputDefinition([
+    new InputArgument('task', InputArgument::OPTIONAL, '', 'build'),
+]);
+$input = new ArgvInput(null, $definition);
+
+Debug::enable();
+
+$task = $input->getArgument('task');
+switch ($task) {
+    case 'build':
+        run(['php', 'bin/console', 'doctrine:database:create', '--if-not-exists']);
+        run(['php','bin/console', 'doctrine:migration:migrate', '--no-interaction', '--allow-no-migration']);
+        run(['php','bin/console', 'doctrine:fixtures:load', '--group=permanent', '--append', '--env=dev']);
+
+        run(['chmod', '-R', '0777', 'public/uploads']);
+//        run(['chmod', '-R', '0777', 'resources/templates']);
+        run(['chmod', '-R', '0777', 'var/cache']);
+        run(['chmod', '-R', '0777', 'var/log']);
+
+        break;
+    case 'release':
+        run(['composer', 'dump-autoload', '--classmap-authoritative', '--no-dev']);
+        run(['php', 'bin/console', 'cache:clear', '--env=prod']);
+        run(['php', 'bin/console', 'cache:warmup', '--env=prod']);
+        run(['php', 'bin/console', 'doctrine:migration:migrate', '--no-interaction', '--allow-no-migration']);
+
+        run(['chmod', '-R', '0777', 'public/uploads']);
+        run(['chmod', '-R', '0777', 'var/cache']);
+        run(['chmod', '-R', '0777', 'var/log']);
+        break;
+    case 'test':
+        // phpstan
+        run(['php', './vendor/bin/phpstan', 'analyse']);
+
+        // cache
+        run(['php', 'bin/console', 'cache:clear', '--env=test']);
+        run(['php', 'bin/console', 'cache:warmup', '--env=test']);
+
+        // database
+        run(['php', 'bin/console', 'doctrine:database:drop', '--if-exists', '--force', '--env=test']);
+        run(['php', 'bin/console', 'doctrine:database:create', '--if-not-exists', '--env=test']);
+        run(['php', 'bin/console', 'doctrine:migration:migrate', '--no-interaction', '--allow-no-migration', '--env=test']);
+        run(['php', 'bin/console', 'doctrine:fixtures:load', '--append', '--env=test']);
+
+        // tests
+        run(['php', 'bin/phpunit']);
+        break;
+    default:
+        throw new RuntimeException('Undefined task: '.$task);
+}
+
+function run(array $cmd, $catchOutput = false)
+{
+    $process = new Process($cmd);
+    $process->setTimeout(300);
+
+    if (Process::isTtySupported() && !$catchOutput) {
+        $process->setTty(true);
+    }
+
+    if ($catchOutput) {
+        $process->mustRun();
+
+        return $process->getOutput();
+    } else {
+        $process->mustRun(function ($type, $buffer) {
+            echo $buffer;
+        });
+    }
+}

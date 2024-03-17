@@ -1,0 +1,12 @@
+includes:
+	- vendor/ekino/phpstan-banned-code/extension.neon
+
+parameters:
+    level: max
+    paths: [src]
+    checkMissingIterableValueType: false
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        - '#no typehint specified#'
+        - '#has no return typehint specified#'
+        - '#with no typehint specified#'

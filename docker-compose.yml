@@ -1,0 +1,48 @@
+version: '3.7'
+
+services:
+    db:
+        image: mysql/mysql-server
+        restart: ${RESTART_CONDITION:-no}
+        volumes:
+            - ${DATABASE_VOLUME:-db_timelock}:/var/lib/mysql:cached
+        environment:
+            MYSQL_ROOT_PASSWORD: "root"
+            MYSQL_ROOT_HOST: "%"
+            MYSQL_DATABASE: db
+            TZ: ${TIMEZONE:-UTC}
+        ports:
+            - ${MYSQL_HOST_IP:-127.0.0.1}:${MYSQL_PORT}:3306
+
+    app:
+        build:
+            context: app/docker
+            args:
+                ENVIRONMENT: ${ENVIRONMENT:-development}
+                TIMEZONE: ${TIMEZONE:-UTC}
+        volumes:
+            - ./app:/var/www/app:cached
+        ports:
+            - 127.0.0.1:${APP_HTTP_PORT}:80
+            - 127.0.0.1:${APP_HTTPS_PORT}:443
+        restart: ${RESTART_CONDITION:-no}
+        depends_on:
+            - db
+        logging:
+            driver: "json-file"
+            options:
+                max-file: "5"
+                max-size: "10m"
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:latest
+        ports:
+            - 127.0.0.1:${PHP_MY_ADMIN_HTTP_PORT}:80
+        environment:
+            PMA_HOSTS: db
+        restart: ${RESTART_CONDITION:-no}
+        depends_on:
+            - db
+
+volumes:
+    db_timelock:

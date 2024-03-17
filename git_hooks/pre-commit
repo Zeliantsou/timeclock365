@@ -1,0 +1,21 @@
+#!/bin/bash
+
+phpstan_cmd="php -d memory_limit=512M app/vendor/phpstan/phpstan/phpstan analyze -c app/phpstan.neon"
+cs_fixer_cmd="php -d memory_limit=512M app/vendor/friendsofphp/php-cs-fixer/php-cs-fixer --verbose --config=app/.php-cs-fixer.php --cache-file=app/.php-cs-fixer.cache fix"
+
+touch .process_commit
+
+echo "Pre-commit hook: Code style fixer"
+
+echo $cs_fixer_cmd
+eval $cs_fixer_cmd
+
+echo "Pre-commit hook: PHPStan analyze"
+
+echo $phpstan_cmd
+eval $phpstan_cmd
+
+ret=$?
+if [ $ret -ne 0 ]; then
+    exit $ret
+fi
