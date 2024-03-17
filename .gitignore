@@ -1,0 +1,14 @@
+/.idea
+/.env
+/.gradle
+/.process_commit
+/.php_cs.cache
+/docker-compose.override.yml
+.DS_Store
+composer.phar
+.php-cs-fixer.cache
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
