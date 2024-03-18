@@ -6,6 +6,7 @@ parameters:
     paths: [src]
     checkMissingIterableValueType: false
     reportUnmatchedIgnoredErrors: false
+    checkGenericClassInNonGenericObjectType: false
     ignoreErrors:
         - '#no typehint specified#'
         - '#has no return typehint specified#'
