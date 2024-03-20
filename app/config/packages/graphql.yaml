@@ -1,0 +1,11 @@
+overblog_graphql:
+    definitions:
+        schema:
+            query: AuthorQuery
+            mutation: AuthorMutation
+        mappings:
+            types:
+                -
+                    type: yaml
+                    dir: "%kernel.project_dir%/config/graphql/types"
+                    suffix: null

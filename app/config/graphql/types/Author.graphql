@@ -1,0 +1,15 @@
+type Author {
+    id: ID!
+    fullName: String!
+    bookAmount: Int!
+}
+
+input CreateAuthor {
+    fullName: String!
+    bookAmount: Int
+}
+
+input UpdateAuthor {
+    fullName: String
+    bookAmount: Int
+}

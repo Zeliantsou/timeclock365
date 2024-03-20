@@ -22,11 +22,11 @@ class Author
 
     public function __construct(
         string $fullName,
-        int $bookAmount = 0,
+        ?int $bookAmount = null,
         ?string $id = null
     ) {
         $this->fullName = $fullName;
-        $this->bookAmount = $bookAmount;
+        $this->bookAmount = $bookAmount ?? 0;
         $this->id = (null !== $id) ? Uuid::fromString($id) : Uuid::v4();
     }
 
