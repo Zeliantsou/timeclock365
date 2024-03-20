@@ -1,4 +1,4 @@
-# Timelock365 / Test task
+# Timeclock365 / Test task
 
 ## Prerequisites
 
