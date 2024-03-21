@@ -30,7 +30,7 @@ class AuthorService
     // add validation
     public function createAuthor(array $data): Author
     {
-        $author = new Author($data['bookAmount'], $data['bookAmount']);
+        $author = new Author($data['fullName'], $data['bookAmount']);
 
         $this->em->persist($author);
         $this->em->flush();
@@ -40,17 +40,17 @@ class AuthorService
 
     // add validation
     // add listener for adding book amount when book created
-    public function updateAuthor(string $id, array $data): Author
+    public function updateAuthor(array $data): Author
     {
-        $author = $this->repository->find($id);
+        $author = $this->repository->find($data['id']);
 
         if (!$author) {
-            throw new AuthorNotFoundException($id);
+            throw new AuthorNotFoundException($data['id']);
         }
 
         // check if empty
         $author->setFullName($data['fullName']);
-        $author->setFullName($data['bookAmount']);
+        $author->setBookAmount($data['bookAmount']);
 
         $this->em->persist($author);
         $this->em->flush();

@@ -1,0 +1,39 @@
+Author:
+    type: object
+    config:
+        description: "Author"
+        fields:
+            id:
+                type: "String!"
+                description: "Author id."
+            fullName:
+                type: "String!"
+                description: "Full author name."
+            bookAmount:
+                type: "Int!"
+                description: "Number of books written by the author."
+
+CreateAuthorInput:
+    type: input-object
+    config:
+        fields:
+            fullName:
+                type: "String!"
+                description: "Full author name."
+            bookAmount:
+                type: "Int"
+                description: "Number of books written by the author."
+
+UpdateAuthorInput:
+    type: input-object
+    config:
+        fields:
+            id:
+                type: "String!"
+                description: "Author id."
+            fullName:
+                type: "String"
+                description: "Full author name."
+            bookAmount:
+                type: "Int"
+                description: "Number of books written by the author."

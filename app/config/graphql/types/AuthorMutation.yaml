@@ -1,0 +1,27 @@
+AuthorMutation:
+    type: object
+    config:
+        fields:
+            createAuthor:
+                type: Author!
+                resolve: "@=mutation('create_author', args['input'])"
+                args:
+                    input:
+                        type: CreateAuthorInput!
+                        description: 'Author name and book amount.'
+
+            updateAuthor:
+                type: Author!
+                resolve: "@=mutation('update_author', args['input'])"
+                args:
+                    input:
+                        type: UpdateAuthorInput!
+                        description: 'Author id, full name and book amount.'
+
+            deleteAuthor:
+                type: "String!"
+                resolve: "@=mutation('delete_author', args['id'])"
+                args:
+                    id:
+                        description: "Author id"
+                        type: "String!"

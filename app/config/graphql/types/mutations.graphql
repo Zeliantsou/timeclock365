@@ -1,5 +1,0 @@
-type AuthorMutation {
-    createAuthor(author: CreateAuthor!): Author!
-    updateAuthor(id: ID!, author: UpdateAuthor!): Author!
-    deleteAuthor(id: ID!): String!
-}

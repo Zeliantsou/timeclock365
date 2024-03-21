@@ -1,8 +1,12 @@
 overblog_graphql:
     definitions:
         schema:
-            query: AuthorQuery
-            mutation: AuthorMutation
+            author:
+                query: AuthorQuery
+                mutation: AuthorMutation
+            book:
+                query: ~
+                mutation: ~
         mappings:
             types:
                 -

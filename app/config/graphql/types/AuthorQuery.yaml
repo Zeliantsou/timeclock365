@@ -1,0 +1,15 @@
+AuthorQuery:
+    type: object
+    config:
+        description: "Some description"
+        fields:
+            authors:
+                type: "[Author]"
+                resolve: "@=query('authors')"
+            author:
+                type: "Author"
+                resolve: "@=query('author', args['id'])"
+                args:
+                    id:
+                        description: "Author id"
+                        type: "String!"
