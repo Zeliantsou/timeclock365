@@ -5,8 +5,8 @@ overblog_graphql:
                 query: AuthorQuery
                 mutation: AuthorMutation
             book:
-                query: ~
-                mutation: ~
+                query: BookQuery
+                mutation: BookMutation
         mappings:
             types:
                 -

@@ -1,0 +1,57 @@
+Book:
+    type: object
+    config:
+        description: "Book"
+        fields:
+            id:
+                type: "String!"
+                description: "Book id."
+            title:
+                type: "String!"
+                description: "Book title."
+            authors:
+                type: "[Author!]"
+                description: "Author list."
+            description:
+                type: "String"
+                description: "Book description."
+            publishedYear:
+                type: "Int"
+                description: "Published year."
+
+CreateBookInput:
+    type: input-object
+    config:
+        fields:
+            title:
+                type: "String!"
+                description: "Book title."
+            authors:
+                type: "[AuthorIdInput!]"
+                description: "Author id list."
+            description:
+                type: "String"
+                description: "Book description."
+            publishedYear:
+                type: "Int"
+                description: "Published year."
+
+UpdateBookInput:
+    type: input-object
+    config:
+        fields:
+            id:
+                type: "String!"
+                description: "Book id."
+            title:
+                type: "String"
+                description: "Book title."
+            authors:
+                type: "[AuthorIdInput!]"
+                description: "Author id list."
+            description:
+                type: "String"
+                description: "Book description."
+            publishedYear:
+                type: "Int"
+                description: "Published year."

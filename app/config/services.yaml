@@ -22,15 +22,16 @@ services:
 
     App\Resolver\AuthorResolver:
         tags:
-            # author
             - { name: overblog_graphql.query, method: getAuthors, alias: authors }
             - { name: overblog_graphql.query, method: getAuthor, alias: author }
             - { name: overblog_graphql.query, method: createAuthor, alias: create_author }
             - { name: overblog_graphql.query, method: updateAuthor, alias: update_author }
             - { name: overblog_graphql.query, method: deleteAuthor, alias: delete_author }
-            # book
-#            - { name: overblog_graphql.query, method: getBooks, alias: books }
-#            - { name: overblog_graphql.query, method: getBook, alias: book }
-#            - { name: overblog_graphql.query, method: createBook, alias: create_book }
-#            - { name: overblog_graphql.query, method: updateBook, alias: update_book }
-#            - { name: overblog_graphql.query, method: deleteBook, alias: delete_book }
+
+    App\Resolver\BookResolver:
+        tags:
+            - { name: overblog_graphql.query, method: getBooks, alias: books }
+            - { name: overblog_graphql.query, method: getBook, alias: book }
+            - { name: overblog_graphql.query, method: createBook, alias: create_book }
+            - { name: overblog_graphql.query, method: updateBook, alias: update_book }
+            - { name: overblog_graphql.query, method: deleteBook, alias: delete_book }

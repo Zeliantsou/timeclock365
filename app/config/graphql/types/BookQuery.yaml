@@ -1,0 +1,15 @@
+BookQuery:
+    type: object
+    config:
+        description: "Book"
+        fields:
+            books:
+                type: "[Book]"
+                resolve: "@=query('books')"
+            book:
+                type: "Book"
+                resolve: "@=query('book', args['id'])"
+                args:
+                    id:
+                        description: "Book id"
+                        type: "String!"

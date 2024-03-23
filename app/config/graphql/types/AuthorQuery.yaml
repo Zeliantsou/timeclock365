@@ -1,7 +1,7 @@
 AuthorQuery:
     type: object
     config:
-        description: "Some description"
+        description: "Author"
         fields:
             authors:
                 type: "[Author]"

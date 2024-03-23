@@ -30,9 +30,9 @@ class Book
 
     public function __construct(
         string $title,
+        ?Collection $authors = null,
         ?string $description = null,
         ?int $publishedYear = null,
-        ?Collection $authors = null,
         ?string $id = null,
     ) {
         $this->id = (null !== $id) ? Uuid::fromString($id) : Uuid::v4();

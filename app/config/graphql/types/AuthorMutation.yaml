@@ -7,17 +7,15 @@ AuthorMutation:
                 resolve: "@=mutation('create_author', args['input'])"
                 args:
                     input:
-                        type: CreateAuthorInput!
+                        type: "CreateAuthorInput!"
                         description: 'Author name and book amount.'
-
             updateAuthor:
                 type: Author!
                 resolve: "@=mutation('update_author', args['input'])"
                 args:
                     input:
-                        type: UpdateAuthorInput!
+                        type: "UpdateAuthorInput!"
                         description: 'Author id, full name and book amount.'
-
             deleteAuthor:
                 type: "String!"
                 resolve: "@=mutation('delete_author', args['id'])"

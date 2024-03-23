@@ -1,0 +1,25 @@
+BookMutation:
+    type: object
+    config:
+        fields:
+            createBook:
+                type: "Book!"
+                resolve: "@=mutation('create_book', args['input'])"
+                args:
+                    input:
+                        type: "CreateBookInput!"
+                        description: 'Title, authors, description and published year.'
+            updateBook:
+                type: "Book!"
+                resolve: "@=mutation('update_book', args['input'])"
+                args:
+                    input:
+                        type: "UpdateBookInput!"
+                        description: 'Id, title, authors, description and published year.'
+            deleteBook:
+                type: "String!"
+                resolve: "@=mutation('delete_book', args['id'])"
+                args:
+                    id:
+                        description: "Book id"
+                        type: "String!"
