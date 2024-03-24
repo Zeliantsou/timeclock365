@@ -37,11 +37,3 @@ UpdateAuthorInput:
             bookAmount:
                 type: "Int"
                 description: "Number of books written by the author."
-
-AuthorIdInput:
-    type: input-object
-    config:
-        fields:
-            id:
-                type: "String!"
-                description: "Author id."

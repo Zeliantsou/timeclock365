@@ -20,19 +20,23 @@ class BookResolver implements QueryInterface, MutationInterface, AliasedInterfac
         return $this->bookService->getBooks();
     }
 
-    public function getBook(string $id): ?Book
+    public function getBook(string $id): Book
     {
         return $this->bookService->getBook($id);
     }
 
     public function createBook(array $data): Book
     {
-        return $this->bookService->createBook($data);
+        $bookData = $this->bookService->decorateBefore($data);
+
+        return $this->bookService->createBook($bookData);
     }
 
     public function updateBook(array $data): Book
     {
-        return $this->bookService->updateBook($data);
+        $bookData = $this->bookService->decorateBefore($data);
+
+        return $this->bookService->updateBook($bookData);
     }
 
     public function deleteBook(string $id): string

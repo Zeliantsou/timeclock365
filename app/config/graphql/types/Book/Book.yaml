@@ -10,7 +10,7 @@ Book:
                 type: "String!"
                 description: "Book title."
             authors:
-                type: "[Author!]"
+                type: "[Author]"
                 description: "Author list."
             description:
                 type: "String"
@@ -27,8 +27,8 @@ CreateBookInput:
                 type: "String!"
                 description: "Book title."
             authors:
-                type: "[AuthorIdInput!]"
-                description: "Author id list."
+                type: "String!"
+                description: "Author ids separated by comma, e.g. '0022044f-032b-45b7-8761-efea293628be, 023fab1d-6553-4280-9945-c54c5f105a73'."
             description:
                 type: "String"
                 description: "Book description."
@@ -47,8 +47,8 @@ UpdateBookInput:
                 type: "String"
                 description: "Book title."
             authors:
-                type: "[AuthorIdInput!]"
-                description: "Author id list."
+                type: "String"
+                description: "Author ids separated by comma, e.g. '0022044f-032b-45b7-8761-efea293628be, 023fab1d-6553-4280-9945-c54c5f105a73'."
             description:
                 type: "String"
                 description: "Book description."

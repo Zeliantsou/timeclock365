@@ -19,7 +19,7 @@ class Book
     #[ORM\Column(type: 'string')]
     protected ?string $title = null;
 
-    #[ORM\ManyToMany(targetEntity: Author::class)]
+    #[ORM\ManyToMany(targetEntity: Author::class, cascade: ['persist'])]
     protected Collection $authors;
 
     #[ORM\Column(type: 'text', nullable: true)]

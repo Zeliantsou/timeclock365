@@ -19,23 +19,27 @@ class AuthorService
     ) {
     }
 
-    public function getAuthor(string $id): ?Author
-    {
-        return $this->repository->find($id);
-    }
-
     public function getAuthors(): array
     {
         return $this->repository->findAll();
+    }
+
+    public function getAuthor(string $id): Author
+    {
+        $author = $this->repository->find($id);
+
+        if (!$author) {
+            throw new AuthorNotFoundException($id);
+        }
+
+        return $author;
     }
 
     public function createAuthor(array $data): Author
     {
         $author = new Author();
 
-        $form = $this->formFactory->create(
-            AuthorType::class, $author
-        );
+        $form = $this->formFactory->create(AuthorType::class, $author);
         $form->submit($data);
 
         if ($form->isValid()) {
@@ -59,9 +63,7 @@ class AuthorService
 
         unset($data['id']);
 
-        $form = $this->formFactory->create(
-            AuthorType::class, $author
-        );
+        $form = $this->formFactory->create(AuthorType::class, $author);
         $form->submit($data);
 
         if ($form->isValid()) {

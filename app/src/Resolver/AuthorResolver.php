@@ -20,7 +20,7 @@ class AuthorResolver implements QueryInterface, MutationInterface, AliasedInterf
         return $this->authorService->getAuthors();
     }
 
-    public function getAuthor(string $id): ?Author
+    public function getAuthor(string $id): Author
     {
         return $this->authorService->getAuthor($id);
     }

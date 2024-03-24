@@ -4,9 +4,11 @@ namespace App\Entity;
 
 use App\Repository\AuthorRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: AuthorRepository::class)]
+#[UniqueEntity('fullName')]
 class Author
 {
     #[ORM\Id]

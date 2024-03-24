@@ -19,23 +19,27 @@ class BookService
     ) {
     }
 
-    public function getBook(string $id): ?Book
-    {
-        return $this->repository->find($id);
-    }
-
     public function getBooks(): array
     {
         return $this->repository->findAll();
+    }
+
+    public function getBook(string $id): Book
+    {
+        $book = $this->repository->find($id);
+
+        if (!$book) {
+            throw new BookNotFoundException($id);
+        }
+
+        return $book;
     }
 
     public function createBook(array $data): Book
     {
         $book = new Book();
 
-        $form = $this->formFactory->create(
-            BookType::class, $book
-        );
+        $form = $this->formFactory->create(BookType::class, $book);
         $form->submit($data);
 
         if ($form->isValid()) {
@@ -60,9 +64,7 @@ class BookService
 
         unset($data['id']);
 
-        $form = $this->formFactory->create(
-            BookType::class, $book
-        );
+        $form = $this->formFactory->create(BookType::class, $book);
         $form->submit($data);
 
         if ($form->isValid()) {
@@ -89,5 +91,14 @@ class BookService
         $this->em->flush();
 
         return sprintf('Book with id = %s successfully removed', $id);
+    }
+
+    public function decorateBefore(array $data): array
+    {
+        if (array_key_exists('authors', $data)) {
+            $data['authors'] = explode(', ', $data['authors']);
+        }
+
+        return $data;
     }
 }
