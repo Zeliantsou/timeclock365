@@ -17,7 +17,7 @@ class Book
     protected Uuid $id;
 
     #[ORM\Column(type: 'string')]
-    protected string $title;
+    protected ?string $title = null;
 
     #[ORM\ManyToMany(targetEntity: Author::class)]
     protected Collection $authors;
@@ -28,18 +28,10 @@ class Book
     #[ORM\Column(type: 'smallint', nullable: true)]
     protected ?int $publishedYear = null;
 
-    public function __construct(
-        string $title,
-        ?Collection $authors = null,
-        ?string $description = null,
-        ?int $publishedYear = null,
-        ?string $id = null,
-    ) {
+    public function __construct(?string $id = null)
+    {
         $this->id = (null !== $id) ? Uuid::fromString($id) : Uuid::v4();
-        $this->title = $title;
-        $this->authors = ($authors) ?: new ArrayCollection();
-        $this->description = $description;
-        $this->publishedYear = $publishedYear;
+        $this->authors = new ArrayCollection();
     }
 
     public function getId(): Uuid
@@ -47,7 +39,7 @@ class Book
         return $this->id;
     }
 
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -67,7 +59,7 @@ class Book
         return $this->publishedYear;
     }
 
-    public function setTitle(string $title): void
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }

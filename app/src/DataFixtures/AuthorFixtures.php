@@ -24,7 +24,10 @@ class AuthorFixtures extends Fixture implements FixtureGroupInterface
 
         foreach ($authors as $authorName => $bookAmount) {
             if (!$this->authorRepository->findOneBy(['fullName' => $authorName])) {
-                $author = new Author($authorName, $bookAmount);
+                $author = new Author();
+                $author->setFullName($authorName);
+                $author->setBookAmount($bookAmount);
+
                 $manager->persist($author);
             }
         }

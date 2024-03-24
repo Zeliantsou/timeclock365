@@ -3,15 +3,19 @@
 namespace App\Service;
 
 use App\Entity\Book;
+use App\Exception\Book\BookInvalidSubmittedDataException;
 use App\Exception\Book\BookNotFoundException;
+use App\Form\BookType;
 use App\Repository\BookRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\FormFactoryInterface;
 
 class BookService
 {
     public function __construct(
         private readonly BookRepository $repository,
-        private readonly EntityManagerInterface $em
+        private readonly EntityManagerInterface $em,
+        private readonly FormFactoryInterface $formFactory
     ) {
     }
 
@@ -27,17 +31,23 @@ class BookService
 
     public function createBook(array $data): Book
     {
-        $author = new Book(
-            $data['title'],
-            $data['authors'],
-            $data['description'],
-            $data['publishedYear']
+        $book = new Book();
+
+        $form = $this->formFactory->create(
+            BookType::class, $book
         );
+        $form->submit($data);
 
-        $this->em->persist($author);
-        $this->em->flush();
+        if ($form->isValid()) {
+            $this->em->persist($book);
+            $this->em->flush();
 
-        return $author;
+            return $book;
+        }
+
+        $error = $form->getErrors(true)[0];
+        /* @phpstan-ignore-next-line */
+        throw new BookInvalidSubmittedDataException($error->getMessage());
     }
 
     public function updateBook(array $data): Book
@@ -48,15 +58,23 @@ class BookService
             throw new BookNotFoundException($data['id']);
         }
 
-        $book->setTitle($data['title']);
-        $book->setAuthors($data['authors']);
-        $book->setDescription($data['description']);
-        $book->setPublishedYear($data['publishedYear']);
+        unset($data['id']);
 
-        $this->em->persist($book);
-        $this->em->flush();
+        $form = $this->formFactory->create(
+            BookType::class, $book
+        );
+        $form->submit($data);
 
-        return $book;
+        if ($form->isValid()) {
+            $this->em->persist($book);
+            $this->em->flush();
+
+            return $book;
+        }
+
+        $error = $form->getErrors(true)[0];
+        /* @phpstan-ignore-next-line */
+        throw new BookInvalidSubmittedDataException($error->getMessage());
     }
 
     public function deleteBook(string $id): string

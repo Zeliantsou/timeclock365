@@ -24,7 +24,14 @@ class BookFixtures extends Fixture implements FixtureGroupInterface, DependentFi
         $books = $this->getBooks(__DIR__.'/books.json');
 
         foreach ($books as $bookData) {
-            $book = new Book(...$this->getBookPayload($bookData));
+            $payload = $this->getBookPayload($bookData);
+
+            $book = new Book();
+            $book->setTitle($payload['title']);
+            $book->setAuthors($payload['authors']);
+            $book->setDescription($payload['description']);
+            $book->setPublishedYear($payload['publishedYear']);
+
             $manager->persist($book);
         }
 
@@ -40,9 +47,9 @@ class BookFixtures extends Fixture implements FixtureGroupInterface, DependentFi
 
         return [
             'title' => $bookData['title'],
+            'authors' => new ArrayCollection($this->getAuthors($bookData['authors'])),
             'description' => $description,
             'publishedYear' => $this->getPublishedYear($publishedDate),
-            'authors' => new ArrayCollection($this->getAuthors($bookData['authors'])),
         ];
     }
 
