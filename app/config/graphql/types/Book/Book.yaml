@@ -55,3 +55,17 @@ UpdateBookInput:
             publishedYear:
                 type: "Int"
                 description: "Published year."
+
+FilterBookInput:
+    type: input-object
+    config:
+        fields:
+            title:
+                type: "String"
+                description: "Book title."
+            authorName:
+                type: "String"
+                description: "Author name"
+            publishedYear:
+                type: "Int"
+                description: "Published year."

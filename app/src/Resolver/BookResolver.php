@@ -15,9 +15,9 @@ class BookResolver implements QueryInterface, MutationInterface, AliasedInterfac
     ) {
     }
 
-    public function getBooks(): array
+    public function getBooks(?array $filterData = null): array
     {
-        return $this->bookService->getBooks();
+        return $this->bookService->getBooks($filterData);
     }
 
     public function getBook(string $id): Book

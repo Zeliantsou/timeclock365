@@ -5,7 +5,12 @@ BookQuery:
         fields:
             books:
                 type: "[Book]"
-                resolve: "@=query('books')"
+                resolve: "@=query('books', args['input'])"
+                args:
+                    input:
+                        type: "FilterBookInput"
+                        description: 'Title, author name and published year.'
+
             book:
                 type: "Book"
                 resolve: "@=query('book', args['id'])"

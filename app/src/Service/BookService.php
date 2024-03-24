@@ -2,10 +2,13 @@
 
 namespace App\Service;
 
+use App\DTO\BookFilterDTO;
 use App\Entity\Book;
+use App\Exception\Book\BookInvalidFilterDataException;
 use App\Exception\Book\BookInvalidSubmittedDataException;
 use App\Exception\Book\BookNotFoundException;
 use App\Form\BookType;
+use App\Form\DTO\BookFilterDTOType;
 use App\Repository\BookRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -20,9 +23,24 @@ class BookService
     ) {
     }
 
-    public function getBooks(): array
+    public function getBooks(?array $filterData = null): array
     {
-        return $this->repository->findAll();
+        if (!$filterData) {
+            return $this->repository->findAll();
+        }
+
+        $filterDTO = new BookFilterDTO();
+        $form = $this->formFactory->create(BookFilterDTOType::class, $filterDTO);
+        $form->submit($filterData);
+
+        if ($form->isValid()) {
+            /* @phpstan-ignore-next-line */
+            return $this->repository->findByParams($form->getData());
+        }
+
+        $error = $form->getErrors(true)[0];
+        /* @phpstan-ignore-next-line */
+        throw new BookInvalidFilterDataException($error->getMessage());
     }
 
     public function getBook(string $id): Book
