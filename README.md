@@ -24,3 +24,16 @@ Default port mapping (see `.env` file):
     test_app_1                       /entrypoint.sh                   Up             127.0.0.1:8083->443/tcp, 127.0.0.1:8080->80/tcp, 9000/tcp
     test_db_1                        /entrypoint.sh mysqld            Up (healthy)   127.0.0.1:8306->3306/tcp, 33060/tcp, 33061/tcp
     test_phpmyadmin_1                /docker-entrypoint.sh apac ...   Up             127.0.0.1:8090->80/tcp
+
+Up containers:
+
+        docker-compose up -d
+
+Load fixtures:
+
+        docker-compose exec app php bin/console doctrine:fixtures:load --group=test
+
+Routs:
+
+        http://127.0.0.1:8080/graphiql/author
+        http://127.0.0.1:8080/graphiql/book
