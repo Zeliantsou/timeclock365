@@ -9,6 +9,7 @@ use App\Form\BookType;
 use App\Repository\BookRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Uid\UuidV4;
 
 class BookService
 {
@@ -26,13 +27,11 @@ class BookService
 
     public function getBook(string $id): Book
     {
-        $book = $this->repository->find($id);
-
-        if (!$book) {
+        if (!$this->isBookExist($id)) {
             throw new BookNotFoundException($id);
         }
 
-        return $book;
+        return $this->repository->find($id); /* @phpstan-ignore-line */
     }
 
     public function createBook(array $data): Book
@@ -56,22 +55,21 @@ class BookService
 
     public function updateBook(array $data): Book
     {
-        $book = $this->repository->find($data['id']);
-
-        if (!$book) {
+        if (!$this->isBookExist($data['id'])) {
             throw new BookNotFoundException($data['id']);
         }
 
-        unset($data['id']);
+        $book = $this->repository->find($data['id']);
 
         $form = $this->formFactory->create(BookType::class, $book);
+        unset($data['id']);
         $form->submit($data);
 
         if ($form->isValid()) {
-            $this->em->persist($book);
+            $this->em->persist($book); /* @phpstan-ignore-line */
             $this->em->flush();
 
-            return $book;
+            return $book; /* @phpstan-ignore-line */
         }
 
         $error = $form->getErrors(true)[0];
@@ -81,13 +79,11 @@ class BookService
 
     public function deleteBook(string $id): string
     {
-        $book = $this->repository->find($id);
-
-        if (!$book) {
+        if (!$this->isBookExist($id)) {
             throw new BookNotFoundException($id);
         }
 
-        $this->em->remove($book);
+        $this->em->remove($this->repository->find($id)); /* @phpstan-ignore-line */
         $this->em->flush();
 
         return sprintf('Book with id = %s successfully removed', $id);
@@ -100,5 +96,10 @@ class BookService
         }
 
         return $data;
+    }
+
+    private function isBookExist(string $id): bool
+    {
+        return UuidV4::isValid($id) && $this->repository->find($id);
     }
 }

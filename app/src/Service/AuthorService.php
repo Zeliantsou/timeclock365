@@ -9,6 +9,7 @@ use App\Form\AuthorType;
 use App\Repository\AuthorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Uid\UuidV4;
 
 class AuthorService
 {
@@ -26,13 +27,11 @@ class AuthorService
 
     public function getAuthor(string $id): Author
     {
-        $author = $this->repository->find($id);
-
-        if (!$author) {
+        if (!$this->isAuthorExist($id)) {
             throw new AuthorNotFoundException($id);
         }
 
-        return $author;
+        return $this->repository->find($id); /* @phpstan-ignore-line */
     }
 
     public function createAuthor(array $data): Author
@@ -56,21 +55,21 @@ class AuthorService
 
     public function updateAuthor(array $data): Author
     {
-        $author = $this->repository->find($data['id']);
-        if (!$author) {
+        if (!$this->isAuthorExist($data['id'])) {
             throw new AuthorNotFoundException($data['id']);
         }
 
-        unset($data['id']);
+        $author = $this->repository->find($data['id']);
 
         $form = $this->formFactory->create(AuthorType::class, $author);
+        unset($data['id']);
         $form->submit($data);
 
         if ($form->isValid()) {
-            $this->em->persist($author);
+            $this->em->persist($author); /* @phpstan-ignore-line */
             $this->em->flush();
 
-            return $author;
+            return $author; /* @phpstan-ignore-line */
         }
 
         $error = $form->getErrors(true)[0];
@@ -80,15 +79,18 @@ class AuthorService
 
     public function deleteAuthor(string $id): string
     {
-        $author = $this->repository->find($id);
-
-        if (!$author) {
+        if (!$this->isAuthorExist($id)) {
             throw new AuthorNotFoundException($id);
         }
 
-        $this->em->remove($author);
+        $this->em->remove($this->repository->find($id)); /* @phpstan-ignore-line */
         $this->em->flush();
 
         return sprintf('Author with id = %s successfully removed', $id);
+    }
+
+    private function isAuthorExist(string $id): bool
+    {
+        return UuidV4::isValid($id) && $this->repository->find($id);
     }
 }

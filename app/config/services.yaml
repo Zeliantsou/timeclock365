@@ -35,3 +35,7 @@ services:
             - { name: overblog_graphql.query, method: createBook, alias: create_book }
             - { name: overblog_graphql.query, method: updateBook, alias: update_book }
             - { name: overblog_graphql.query, method: deleteBook, alias: delete_book }
+
+    App\EventListener\BookSubscriber:
+        tags:
+            - { name: doctrine.event_subscriber, connection: default}
